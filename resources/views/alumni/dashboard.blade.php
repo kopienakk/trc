@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +39,8 @@
             margin-bottom: 1.5rem;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid #D4BEE4;
             padding: 0.75rem;
             text-align: left;
@@ -66,7 +68,7 @@
             cursor: pointer;
         }
 
-        .actions .edit {
+        .actions .detail {
             background-color: #3B1E54;
         }
 
@@ -86,15 +88,23 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         <h1>Alumni Dashboard</h1>
     </header>
-
-    <h3>Welcome</h3>
+    <!-- <h3>Selamat datang {{ auth()->user()->nama_depan }}</h3>  -->
 
     <div class="container">
-        <a href="/tambah" class="add-button">Tambah Data Alumni</a>
+        <form action="{{ route('logout') }}" method="POST" class="inline">
+            @csrf
+            <button type="submit" class="logout">
+                Logout
+            </button>
+        </form>
+        <form action="" {{ route('alumni.data-diri') }}" method="GET"">
+            <button class=" detail">Detail diri</button>
+        </form>
 
         <div class="table-container">
             <table>
@@ -106,70 +116,26 @@
                         <th>Program Keahlian</th>
                         <th>Status Alumni</th>
                         <th>Tahun Lulus</th>
-                        <th>Aksi</th>
+
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>John Doe</td>
-                        <td>123456789</td>
-                        <td>Teknik Informatika</td>
-                        <td>Bekerja</td>
-                        <td>2022</td>
-                        <td>
-                            <div class="actions">
-                                <button class="edit">Edit</button>
-                                <button class="delete">Hapus</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jane Smith</td>
-                        <td>987654321</td>
-                        <td>Akuntansi</td>
-                        <td>Kuliah</td>
-                        <td>2021</td>
-                        <td>
-                            <div class="actions">
-                                <button class="edit">Edit</button>
-                                <button class="delete">Hapus</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Jane Smith</td>
-                        <td>987654321</td>
-                        <td>Akuntansi</td>
-                        <td>Kuliah</td>
-                        <td>2021</td>
-                        <td>
-                            <div class="actions">
-                                <button class="edit">Edit</button>
-                                <button class="delete">Hapus</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Jane Smith</td>
-                        <td>987654321</td>
-                        <td>Akuntansi</td>
-                        <td>Kuliah</td>
-                        <td>2021</td>
-                        <td>
-                            <div class="actions">
-                                <button class="edit">Edit</button>
-                                <button class="delete">Hapus</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Tambahkan data lainnya di sini -->
+                    @foreach ($alumni as $index => $data)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $data->nama_depan . " " . $data->nama_belakang }}</td>
+                            <td>{{ $data->nisn }}</td>
+                            <td>{{ $data->konsentrasiKeahlian->konsentrasi_keahlian }}</td>
+                            <td>{{ $data->statusAlumni->status }}</td>
+                            <td>{{ $data->tahunLulus->tahun_lulus ?? '-' }}</td>
+
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
+
         </div>
     </div>
 </body>
+
 </html>

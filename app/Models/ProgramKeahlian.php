@@ -18,9 +18,15 @@ class ProgramKeahlian extends Model
         'program_keahlian',
     ];
 
+    public $timestamps = false;
+
     // Relasi ke BidangKeahlian
     public function bidangKeahlian()
     {
         return $this->belongsTo(BidangKeahlian::class, 'id_bidang_keahlian');
+    }
+    public function konsentrasiKeahlian()
+    {
+        return $this->hasMany(konsentrasiKeahlian::class, 'id_konsentrasi_keahlian', 'id_konsentrasi_keahlian');
     }
 }

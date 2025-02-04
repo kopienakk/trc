@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Sekolah;
 use Illuminate\Http\Request;
 
 class SekolahController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+     // Menampilkan semua data sekolah
+     public function index()
+     {
+         $sekolah = Sekolah::all();
+         return view('admin.sekolah.index', compact('sekolah'));
+     }
 
     /**
      * Show the form for creating a new resource.
@@ -23,12 +23,20 @@ class SekolahController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Menyimpan data sekolah baru
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_sekolah' => 'required|max:100',
+            'alamat' => 'required|max:255',
+        ]);
+
+        Sekolah::create([
+            'nama_sekolah' => $request->nama_sekolah,
+            'alamat' => $request->alamat,
+        ]);
+
+        return redirect()->back()->with('success', 'Data sekolah berhasil ditambahkan.');
     }
 
     /**
@@ -39,27 +47,36 @@ class SekolahController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Menampilkan form edit sekolah
+    public function edit($id)
     {
-        //
+        $sekolah = Sekolah::findOrFail($id);
+        return view('admin.sekolah.edit', compact('sekolah'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Memperbarui data sekolah
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'nama_sekolah' => 'required|max:100',
+            'alamat' => 'required|max:255',
+        ]);
+
+        $sekolah = Sekolah::findOrFail($id);
+        $sekolah->update([
+            'nama_sekolah' => $request->nama_sekolah,
+            'alamat' => $request->alamat,
+        ]);
+
+        return redirect()->back()->with('success', 'Data sekolah berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // Menghapus data sekolah
+    public function destroy($id)
     {
-        //
+        $sekolah = Sekolah::findOrFail($id);
+        $sekolah->delete();
+
+        return redirect()->back()->with('success', 'Data sekolah berhasil dihapus.');
     }
 }

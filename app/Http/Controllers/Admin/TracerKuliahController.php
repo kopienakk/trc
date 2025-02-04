@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\TracerKuliah;
 use Illuminate\Http\Request;
 
 class TracerKuliahController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Fungsi untuk menampilkan data tracer kuliah
     public function index()
     {
-        //
+        $tracerKuliah = TracerKuliah::all();
+        return view('admin.tracerkuliah.index', compact('tracerKuliah'));
     }
 
     /**
@@ -20,7 +20,10 @@ class TracerKuliahController extends Controller
      */
     public function create()
     {
-        //
+        // Mengambil semua data bidang keahlan dari tabel
+     $tracerKuliah = TracerKuliah::all();
+     // Mengirim data ke view registrasi
+     return view('admin.tracerkuliah.tambah', compact('tracerKuliah'));
     }
 
     /**
@@ -31,12 +34,13 @@ class TracerKuliahController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id_tracer_kuliah)
     {
-        //
+        // Cari data tracer kuliah berdasarkan ID
+        $tracerKuliah = TracerKuliah::findOrFail($id_tracer_kuliah);
+
+        // Return ke view dengan data tracer kuliah
+        return view('admin.show.tracer_kuliah', compact('tracerKuliah'));
     }
 
     /**
@@ -60,6 +64,9 @@ class TracerKuliahController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $tracerKuliah = TracerKuliah::findOrFail($id);
+        $tracerKuliah->delete();
+
+        return redirect()->back()->with('success', 'Data status alumni berhasil dihapus.');
     }
 }

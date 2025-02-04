@@ -1,20 +1,19 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\RedirectResponse;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Hash;
+use App\Models\AlumniAuth; // Gunakan AlumniAuth
 
 class AuthenticatedSessionController extends Controller
 {
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create()
     {
         return view('auth.login');
     }
@@ -22,31 +21,40 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->authenticate(); // Memastikan proses autentikasi berhasil
+  
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-        // Setelah login, tentukan role berdasarkan email
-        $user = Auth::user();
+        // Cari pengguna di tabel `tbl_alumni` melalui model AlumniAuth
+        $alumni = User::where('email', $credentials['email'])->first();
 
-        // Periksa apakah email yang login adalah admin
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard'); // Arahkan ke halaman dashboard admin
-        } elseif ($user->role === 'alumni') {
-            return redirect()->route('alumni.dashboard'); // Arahkan ke halaman dashboard alumni
+        if (!$alumni || !Hash::check($credentials['password'], $alumni->password)) {
+            return back()->withErrors([
+                'email' => 'Email atau password salah.',
+            ]);
         }
 
-        // Regenerasi session untuk meningkatkan keamanan
-        $request->session()->regenerate();
+        // Login user ke session
+        Auth::login($alumni);
+    
+        if ($alumni->role == 'admin') {
+            // dd(auth()->user());
+            return redirect()->route('admin.dashboard'); 
+        } else {
+            // dd(auth()->user());
+            return redirect()->route('alumni.dashboard');
+        }
 
-        // Redirect ke halaman yang seharusnya setelah login
-        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
         Auth::guard('web')->logout();
 

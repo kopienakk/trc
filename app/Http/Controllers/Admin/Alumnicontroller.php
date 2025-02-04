@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TahunLulus;
 use Illuminate\Http\Request;
 use App\Models\Alumni;
 use App\Models\BidangKeahlian;
@@ -10,7 +11,7 @@ use App\Models\KonsentrasiKeahlian;
 use App\Models\TracerKuliah;
 use App\Models\TracerKerja;
 
-class Alumnicontrollers extends Controller
+class Alumnicontroller extends Controller
 {
     // Menampilkan Form untuk Menambah atau Mengedit Data Alumni
     public function form()
@@ -62,7 +63,11 @@ class Alumnicontrollers extends Controller
      */
     public function create()
     {//
-        return view('alumni.create');
+        // Mengambil semua data tahun lulus dari tabel
+        $tahunLulus = TahunLulus::all();
+        
+        // Mengirim data ke view registrasi
+        return view('auth.register', compact('tahunLulus'));
     }
 
     /**

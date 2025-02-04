@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\StatusAlumni;
 use Illuminate\Http\Request;
 
 class StatusAlumniController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Menampilkan semua data status alumni
     public function index()
     {
-        //
+        $statusAlumni = StatusAlumni::all();
+        return view('admin.statusalumni.index', compact('statusAlumni'));
     }
 
     /**
@@ -20,15 +20,22 @@ class StatusAlumniController extends Controller
      */
     public function create()
     {
-        //
+       
+     return view('admin.statusalumni.tambah');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Menyimpan data status alumni baru
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'status' => 'required|max:100',
+        ]);
+
+        StatusAlumni::create([
+            'status' => $request->status,
+        ]);
+
+        return redirect()->back()->with('success', 'Data status alumni berhasil ditambahkan.');
     }
 
     /**
@@ -39,27 +46,34 @@ class StatusAlumniController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Menampilkan form edit status alumni
+    public function edit($id)
     {
-        //
+        $statusAlumni = StatusAlumni::findOrFail($id);
+        return view('admin.statusalumni.edit', compact('statusAlumni'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Memperbarui data status alumni
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'status' => 'required|max:100',
+        ]);
+
+        $statusAlumni = StatusAlumni::findOrFail($id);
+        $statusAlumni->update([
+            'status' => $request->status,
+        ]);
+
+        return redirect()->back()->with('success', 'Data status alumni berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // Menghapus data status alumni
+    public function destroy($id)
     {
-        //
+        $statusAlumni = StatusAlumni::findOrFail($id);
+        $statusAlumni->delete();
+
+        return redirect()->back()->with('success', 'Data status alumni berhasil dihapus.');
     }
 }

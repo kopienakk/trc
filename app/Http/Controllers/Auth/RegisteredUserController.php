@@ -3,6 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\BidangKeahlian;
+use App\Models\KonsentrasiKeahlian;
+use App\Models\ProgramKeahlian;
+use App\Models\StatusAlumni;
+use App\Models\TahunLulus;
 use App\Models\User;
 use App\Models\Alumni;
 use Illuminate\Auth\Events\Registered;
@@ -19,8 +24,15 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-     
-        return view('auth.register');
+        
+     // Mengambil semua data tahun lulus dari tabel
+     $bidangKeahlian = BidangKeahlian::all();
+     $programKeahlian = ProgramKeahlian::all();
+     $tahunLulus = TahunLulus::all();
+     $konsentrasiKeahlian = KonsentrasiKeahlian::all();
+     $statusAlumni = StatusAlumni::all();
+     // Mengirim data ke view registrasi
+     return view('auth.register', compact('tahunLulus',"bidangKeahlian","programKeahlian", "konsentrasiKeahlian", "statusAlumni"));
     }
 
     /**
@@ -30,12 +42,11 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        dd("halow");    
         // Validasi input
         $validated = $request->validate([
-            'id_tahun_lulus' => 'required|numeric',
-            'id_konsentrasi_keahlian' => 'required|numeric',
-            'id_status_alumni' => 'required|numeric',
+            'tahun_lulus' => 'required|exists:tbl_tahun_lulus,id_tahun_lulus',
+            'id_konsentrasi_keahlian' => 'required|exists:tbl_konsentrasi_keahlian,id_konsentrasi_keahlian',
+            'id_status_alumni' => 'required|exists:tbl_status_alumni,id_status_alumni',
             'nisn' => 'required|unique:tbl_alumni,nisn',
             'nik' => 'required|unique:tbl_alumni,nik',
             'nama_depan' => 'required|string|max:255',
@@ -65,7 +76,7 @@ class RegisteredUserController extends Controller
 
         // Simpan alumni ke tabel `tbl_alumni`
         Alumni::create([
-            'id_tahun_lulus' => $validated['id_tahun_lulus'],
+            'id_tahun_lulus' => $request->tahun_lulus,
             'id_konsentrasi_keahlian' => $validated['id_konsentrasi_keahlian'],
             'id_status_alumni' => $validated['id_status_alumni'],
             'nisn' => $validated['nisn'],

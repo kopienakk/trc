@@ -12,6 +12,7 @@ class Admincontrollers extends Controller
      */
     public function index()
     {
+        // dd(auth()->user());
         $alumni = Alumni::all();
         return view('admin.dashboard' , compact('alumni'));
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\TahunLulus;
 use Illuminate\Http\Request;
 
 class TahunLulusController extends Controller
@@ -12,7 +13,15 @@ class TahunLulusController extends Controller
      */
     public function index()
     {
-        //
+         // Mengambil semua data tahun lulus dari tabel
+     $tahunLulus = TahunLulus::all();
+     // Mengirim data ke view registrasi
+     return view('admin.tahunlulus.index', compact('tahunLulus'));
+    }
+
+    public function tambah()
+    {
+        return view("admin.tahunlulus.tambah");
     }
 
     /**
@@ -23,12 +32,20 @@ class TahunLulusController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Menyimpan data tahun lulus baru
     public function store(Request $request)
     {
-        //
+
+        $request->validate([
+            'tahun_lulus' => 'required|integer',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        TahunLulus::create([
+            'tahun_lulus' => $request->tahun_lulus,
+            'keterangan' => $request->keterangan,
+        ]);
+        return redirect()->back()->with('success', 'Data tahun lulus berhasil ditambahkan.');
     }
 
     /**
@@ -39,27 +56,36 @@ class TahunLulusController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Menampilkan form edit tahun lulus
+    public function edit($id)
     {
-        //
+        $tahunLulus = TahunLulus::findOrFail($id);
+        return view('admin.tahun_lulus.edit', compact('tahunLulus'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Memperbarui data tahun lulus
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'tahun_lulus' => 'required|max',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        $tahunLulus = TahunLulus::findOrFail($id);
+        $tahunLulus->update([
+            'tahun_lulus' => $request->tahun_lulus,
+            'keterangan' => $request->keterangan,
+        ]);
+
+        return redirect()->back()->with('success', 'Data tahun lulus berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // Menghapus data tahun lulus
+    public function destroy($id)
     {
-        //
+        $tahunLulus = TahunLulus::findOrFail($id);
+        $tahunLulus->delete();
+
+        return redirect()->back()->with('success', 'Data tahun lulus berhasil dihapus.');
     }
 }

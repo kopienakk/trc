@@ -9,12 +9,17 @@ class StatusAlumni extends Model
 {
     use HasFactory;
 
+    // Nama tabel
     protected $table = 'tbl_status_alumni';
-    protected $primaryKey = 'id_status_alumni';
-    public $timestamps = false;
 
+    // Primary key
+    protected $primaryKey = 'id';
+
+    // Kolom yang dapat diisi
     protected $fillable = [
+        'kode_status',
         'status',
     ];
-}
 
+    public $timestamps = false;
+}

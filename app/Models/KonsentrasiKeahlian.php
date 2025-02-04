@@ -11,7 +11,7 @@ class KonsentrasiKeahlian extends Model
 
     protected $table = 'tbl_konsentrasi_keahlian';
     protected $primaryKey = 'id_konsentrasi_keahlian';
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = [
         'id_program_keahlian',
@@ -22,7 +22,7 @@ class KonsentrasiKeahlian extends Model
     // Relasi ke tbl_program_keahlian
     public function programKeahlian()
     {
-        return $this->belongsTo(ProgramKeahlian::class, 'id_program_keahlian', 'id_program_keahlian');
+        return $this->belongsTo(ProgramKeahlian::class, 'id_program_keahlian');
     }
 }
 
